@@ -1,8 +1,6 @@
----
-
 # 📘 Tx Agent API Documentation
 
-**Base URL:** `/tx-agent`
+Base URL :`/tx-agent`
 
 ---
 
