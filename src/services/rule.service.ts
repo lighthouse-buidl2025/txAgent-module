@@ -23,3 +23,7 @@ export const executeRule = async (rule: any) => {
 
   return await executeOnAccount(agentAddress, dapp.address, callData);
 };
+
+export const getRulesByUserAddressService = async (userAddress: string) => {
+  return await RuleModel.find({ userAddress: userAddress.toLowerCase() });
+};

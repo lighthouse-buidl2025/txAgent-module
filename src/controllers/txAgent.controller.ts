@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getMappedAccount, createAccountOnChain, excuteTransaction } from '../services/core.service';
-import { createAgentRuleService } from '../services/rule.service';
+import { createAgentRuleService,getRulesByUserAddressService } from '../services/rule.service';
 
 
 export const createAccount = async (req: Request, res: Response): Promise<void> => {
@@ -76,6 +76,28 @@ export const createAgentRule = async (req: Request, res: Response): Promise<void
     });
   } catch (err: any) {
     console.error('❌ createAgentRule error:', err.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getRules = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { address } = req.params;
+
+    if (!address) {
+      res.status(400).json({ success: false, message: 'Address is required' });
+      return;
+    }
+
+    const rules = await getRulesByUserAddressService(address);
+
+    res.status(200).json({
+      success: true,
+      message: 'Rules fetched',
+      data: rules,
+    });
+  } catch (err: any) {
+    console.error('❌ getRules error:', err.message);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
