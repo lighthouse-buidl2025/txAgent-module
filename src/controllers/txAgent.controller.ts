@@ -15,6 +15,10 @@ export const createAccount = async (req: Request, res: Response): Promise<void> 
 
     // 1. 컨트랙트 상에서 맵핑 조회
     const onChainMapped = await getMappedAccount(userAddress);
+    if ( onChainMapped != "0x0000000000000000000000000000000000000000"){
+      res.status(200).json({ success: true, message: 'Account already exists', data: onChainMapped });
+      return;
+    }
 
     // 2. 없으면 새로 생성
     const agentAddress = await createAccountOnChain(userAddress);
@@ -34,7 +38,7 @@ export const getAgentAddress = async (req: Request, res: Response): Promise<void
         return;
     }
     
-    try {
+    try {        
         const userAddress = address.toString().toLowerCase();
         const agentAddress = await getMappedAccount(userAddress);
 
