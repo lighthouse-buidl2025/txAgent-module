@@ -1,17 +1,17 @@
 ---
 
-# 📘 Tx Agent API 문서
+# 📘 Tx Agent API Documentation
 
-Base URL: `/tx-agent`
+**Base URL:** `/tx-agent`
 
 ---
 
 ## 🔹 `GET /agent`
 
-### 📝 설명  
-현재 설정된 에이전트 주소를 조회합니다.
+### 📝 Description  
+Returns the currently configured Agent address.
 
-### ✅ 응답 예시
+### ✅ Sample Response
 
 ```json
 {
@@ -24,10 +24,10 @@ Base URL: `/tx-agent`
 
 ## 🔹 `POST /createAccount`
 
-### 📝 설명  
-특정 유저 지갑 주소로 프록시 계정을 생성합니다.
+### 📝 Description  
+Creates a proxy account for the specified user wallet address.
 
-### 📥 요청 바디
+### 📥 Request Body
 
 ```json
 {
@@ -35,7 +35,7 @@ Base URL: `/tx-agent`
 }
 ```
 
-### ✅ 응답 예시
+### ✅ Sample Response
 
 ```json
 {
@@ -52,11 +52,11 @@ Base URL: `/tx-agent`
 
 ## 🔹 `POST /executeTransaction`
 
-### 📝 설명  
-Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.  
-해당 Dapp에 대한 `DappModel` 이 존재해야 합니다.
+### 📝 Description  
+Executes a transaction using function information from a DApp.  
+The target DApp must already exist in the `DappModel` collection.
 
-### 📥 요청 바디
+### 📥 Request Body
 
 ```json
 {
@@ -67,12 +67,12 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
     "to": "0xrecipient...",
     "amount": "1000000000000000000"
   },
-  "tokenAddress": "0xerc20...",        // (optional) approve 대상 토큰 주소
-  "approveAmount": "1000000000000000000" // (optional) approve 금액
+  "tokenAddress": "0xerc20...",         // (optional) Token address for approval
+  "approveAmount": "1000000000000000000" // (optional) Approval amount
 }
 ```
 
-### ✅ 응답 예시
+### ✅ Sample Response
 
 ```json
 {
@@ -86,10 +86,10 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
 
 ## 🔹 `POST /createAgentRule`
 
-### 📝 설명  
-실행 조건이 포함된 자동화 트랜잭션 룰을 생성합니다.
+### 📝 Description  
+Creates an automated transaction rule with optional execution conditions.
 
-### 📥 요청 바디
+### 📥 Request Body
 
 ```json
 {
@@ -97,13 +97,13 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
   "method": "testCall",
   "params": {},
   "userAddress": "0xuser...",
-  "interval": 120,         // (optional) 실행 주기 (초 단위)
-  "timeout": 10,           // (optional) 실행 전 지연시간 (초 단위)
-  "maxExecutions": 3       // (optional) 최대 실행 횟수
+  "interval": 120,       // (optional) Execution interval in seconds
+  "timeout": 10,         // (optional) Delay before execution in seconds
+  "maxExecutions": 3     // (optional) Maximum number of executions
 }
 ```
 
-> 내부적으로는 다음과 같은 구조로 DB에 저장됩니다 (RuleModel 기준):
+> Internally, the rule is stored in the database using the following structure (based on `RuleModel`):
 
 ```ts
 {
@@ -121,7 +121,7 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
 }
 ```
 
-### ✅ 응답 예시
+### ✅ Sample Response
 
 ```json
 {
@@ -146,10 +146,10 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
 
 ## 🔹 `GET /getRules/:address`
 
-### 📝 설명  
-특정 유저의 자동 실행 룰 목록을 반환합니다.
+### 📝 Description  
+Returns a list of automation rules created by the specified user.
 
-### ✅ 응답 예시
+### ✅ Sample Response
 
 ```json
 {
@@ -175,9 +175,9 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
 
 ---
 
-## 📌 참고 스키마
+## 📌 Reference Schemas
 
-### ✅ DappModel 구조 예시
+### ✅ Example: `DappModel` Structure
 
 ```ts
 {
@@ -192,7 +192,7 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
 }
 ```
 
-### ✅ RuleModel 구조 예시
+### ✅ Example: `RuleModel` Structure
 
 ```ts
 {
@@ -211,3 +211,5 @@ Dapp의 함수 호출 정보를 이용해 트랜잭션을 실행합니다.
   }
 }
 ```
+
+---
