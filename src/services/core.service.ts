@@ -23,6 +23,7 @@ const coreContract = new web3.eth.Contract(CoreAbi as any, coreAddress);
 export const getMappedAccount = async (userAddress: string): Promise<string> => {
   const normalized = web3.utils.toChecksumAddress(userAddress);
   const mapped: string = await coreContract.methods.accounts(normalized).call();
+  console.log( '✅ Mapped account:', mapped);
   return mapped;
 };
 
@@ -61,6 +62,7 @@ export const excuteTransaction = async (input: ExecuteTxInput): Promise<string> 
     if (!agentAddress) throw new Error('Agent address not found');
   
     const dapp = await DappModel.findOne({ address: dappAddress.toLowerCase(), method });
+    console.log('dapp:', dapp);
     if (!dapp) throw new Error('Dapp method template not found');
   
     // ✅ calldata 생성
@@ -68,7 +70,7 @@ export const excuteTransaction = async (input: ExecuteTxInput): Promise<string> 
       method: dapp.method,
       inputs: dapp.calldataTemplate,
     }, params);
-  
+    console.log('callData:', callData);
     // ✅ approve 필요하면 선행 처리
     if (dapp.requiresApproval && tokenAddress && approveAmount) {
       const approveCalldata = buildCallData({
@@ -83,11 +85,11 @@ export const excuteTransaction = async (input: ExecuteTxInput): Promise<string> 
       });
   
       console.log('⏩ Executing approve');
-      await executeOnAccount(agentAddress, tokenAddress, approveCalldata);
+      await executeOnAccount(userAddress, tokenAddress, approveCalldata);
     }
   
     // ✅ execute 트랜잭션 호출
-    const txHash = await executeOnAccount(agentAddress, dappAddress, callData);
+    const txHash = await executeOnAccount(userAddress, dappAddress, callData);
     return txHash;
   };
 
@@ -104,7 +106,11 @@ export const executeOnAccount = async (
   ): Promise<string> => {
     const normalizedAccount = web3.utils.toChecksumAddress(userAddress);
     const normalizedTarget = web3.utils.toChecksumAddress(targetAddress);
-  
+
+    console.log('⏩ Executing transaction on account:', normalizedAccount);
+    console.log('⏩ Target address:', normalizedTarget);
+    console.log('⏩ Call data:', callData);
+
     const method = coreContract.methods.excute(
       normalizedAccount,
       normalizedTarget,
@@ -113,7 +119,9 @@ export const executeOnAccount = async (
   
     const gas = (await method.estimateGas({ from: account.address })).toString();
     const gasPrice = (await web3.eth.getGasPrice()).toString();
-  
+    console.log('⏩ Gas:', gas);
+    console.log('⏩ Gas price:', gasPrice);
+    console.log('⏩ Sending transaction...');
     const receipt = await method.send({
       from: account.address,
       gas,
